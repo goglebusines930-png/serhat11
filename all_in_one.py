@@ -138,7 +138,7 @@ def setup_data(file_path):
 
 # ============ MAIN ============
 print("\n" + "="*60)
-print("🤖 TÜRKÇE YAPAY ZEKA MODELİ - TAMAMLANMIŞ VERSİYON")
+print("🤖 TÜRKÇE YAPAY ZEKA MODELİ - GÜVENLIKLI VERSİYON")
 print("="*60)
 
 data_file = "data.txt"
@@ -189,17 +189,94 @@ model.load_state_dict(torch.load(model_path, map_location=device))
 model.eval()
 
 print("="*60)
-print("METİN ÜRETİLİYOR...")
+print("MODELİ ÜRETİM MODU")
 print("="*60)
 
-for i in range(3):
-    print(f"\nÜretim {i+1}:")
-    print("-"*60)
-    context = torch.zeros((1, 1), dtype=torch.long, device=device)
-    generated = model.generate(context, max_new_tokens=200)
-    generated_text = decode(generated[0].tolist())
-    print(generated_text)
+admin_mode = False
+admin_password = "anahtar587801"
 
-print("\n" + "="*60)
-print("✓ TAMAMLANDI!")
+while True:
+    try:
+        user_input = input("\n> ").strip()
+        
+        if not user_input:
+            continue
+        
+        # Admin kontrolü
+        if user_input == admin_password:
+            admin_mode = True
+            print("✓ Admin modu açıldı! Komutları kullanabilirsin.")
+            continue
+        
+        if admin_mode:
+            # Admin komutları
+            if user_input.startswith("egit"):
+                print("\n🔄 Model yeniden eğitiliyor...")
+                for iter in range(1000):
+                    xb, yb = get_batch()
+                    xb, yb = xb.to(device), yb.to(device)
+                    logits = model(xb)
+                    loss = torch.nn.functional.cross_entropy(logits.view(-1, vocab_size), yb.view(-1))
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+                    if iter % 200 == 0:
+                        print(f"  Adım {iter} | Kayıp: {loss.item():.4f}")
+                torch.save(model.state_dict(), model_path)
+                print("✓ Eğitim tamamlandı ve model kaydedildi!\n")
+            
+            elif user_input.startswith("veri_ekle"):
+                yeni_veri = input("  Eklenecek metni gir: ").strip()
+                if yeni_veri:
+                    with open(data_file, 'a', encoding='utf-8') as f:
+                        f.write(" " + yeni_veri)
+                    print("✓ Veri dosyasına eklendi!\n")
+                    setup_data(data_file)
+                    print("✓ Veri yeniden yüklendi!\n")
+            
+            elif user_input.startswith("parametreler"):
+                print("\n📊 Model Parametreleri:")
+                print(f"  - Kelime dağarcığı: {vocab_size}")
+                print(f"  - Embedding boyutu: 64")
+                print(f"  - Attention başları: 4")
+                print(f"  - Katman sayısı: 4")
+                print(f"  - Blok boyutu: 256")
+                print(f"  - Eğitim verisi: {len(train_data)}")
+                print(f"  - Validation verisi: {len(val_data)}\n")
+            
+            elif user_input.startswith("save"):
+                torch.save(model.state_dict(), model_path)
+                print("✓ Model kaydedildi!\n")
+            
+            elif user_input.startswith("cikis_admin"):
+                admin_mode = False
+                print("✓ Admin modundan çıkıldı.\n")
+            
+            elif user_input.startswith("yardim"):
+                print("\n📖 Admin Komutları:")
+                print("  - egit: Modeli 1000 adım eğit")
+                print("  - veri_ekle: Yeni veri ekle")
+                print("  - parametreler: Model parametrelerini göster")
+                print("  - save: Modeli kaydet")
+                print("  - cikis_admin: Admin modundan çık")
+                print("  - yardim: Bu mesajı göster\n")
+            
+            else:
+                print("❓ Komut tanınmadı. 'yardim' yazarak komutları görebilirsin.\n")
+        
+        else:
+            # Normal mod - metin üretme
+            context = torch.zeros((1, 1), dtype=torch.long, device=device)
+            generated = model.generate(context, max_new_tokens=200)
+            generated_text = decode(generated[0].tolist())
+            print(f"\n🤖 Model: {generated_text}\n")
+    
+    except KeyboardInterrupt:
+        print("\n\n✓ Program kapatıldı.")
+        break
+    except Exception as e:
+        print(f"❌ Hata: {e}\n")
+
+print("="*60)
+print("TAMAMLANDI!")
 print("="*60 + "\n")
