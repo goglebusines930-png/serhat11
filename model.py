@@ -76,3 +76,14 @@ class MiniGPT(nn.Module):
         x = self.ln_f(x)
         logits = self.lm_head(x)
         return logits
+    
+    @torch.no_grad()
+    def generate(self, idx, max_new_tokens=100):
+        for _ in range(max_new_tokens):
+            idx_cond = idx[:, -self.block_size:]
+            logits = self(idx_cond)
+            logits = logits[:, -1, :]
+            probs = torch.softmax(logits, dim=-1)
+            idx_next = torch.multinomial(probs, num_samples=1)
+            idx = torch.cat((idx, idx_next), dim=1)
+        return idx
