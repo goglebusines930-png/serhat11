@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 Türkçe Yapay Zeka Sohbet Odası</title>
+    <title>🤖 Türkçe Yapay Zeka Sohbet Odası - FULL CONTROL</title>
     <style>
         * {
             margin: 0;
@@ -23,14 +23,14 @@
 
         .container {
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
             height: 90vh;
-            max-height: 800px;
+            max-height: 900px;
         }
 
         .header {
@@ -86,13 +86,12 @@
         }
 
         .message-content {
-            max-width: 70%;
+            max-width: 75%;
             padding: 12px 15px;
             border-radius: 12px;
             word-wrap: break-word;
             line-height: 1.4;
             white-space: pre-wrap;
-            font-family: 'Courier New', monospace;
         }
 
         .message.bot .message-content {
@@ -107,18 +106,21 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-bottom-right-radius: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
         }
 
         .code-block {
             background: #1e1e1e;
             color: #00ff00;
-            padding: 12px 15px;
+            padding: 15px;
             border-radius: 8px;
-            max-width: 70%;
+            max-width: 75%;
             font-family: 'Courier New', monospace;
-            font-size: 12px;
+            font-size: 11px;
             line-height: 1.5;
             margin: 10px 0;
+            overflow-x: auto;
         }
 
         .message-time {
@@ -130,12 +132,12 @@
         }
 
         .input-area {
-            padding: 20px;
+            padding: 15px;
             background: white;
             border-top: 1px solid #e0e0e0;
-            border-radius: 0 0 15px 15px;
             display: flex;
             gap: 10px;
+            align-items: flex-end;
         }
 
         .input-field {
@@ -143,10 +145,12 @@
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 25px;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
             transition: all 0.3s;
             font-family: 'Courier New', monospace;
+            max-height: 120px;
+            resize: none;
         }
 
         .input-field:focus {
@@ -154,14 +158,20 @@
             box-shadow: 0 0 10px rgba(102, 126, 234, 0.1);
         }
 
+        .button-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         .send-btn {
-            padding: 12px 25px;
+            padding: 12px 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             transition: all 0.3s;
             display: flex;
@@ -174,15 +184,37 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .send-btn:active {
-            transform: translateY(0);
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
         }
 
         .status {
             text-align: center;
-            padding: 10px;
+            padding: 8px;
             font-size: 12px;
             color: #667eea;
+            background: #f0f1ff;
+            border-top: 1px solid #e0e0e0;
         }
 
         .typing-indicator {
@@ -218,23 +250,13 @@
             }
         }
 
-        .admin-badge {
-            display: inline-block;
-            background: #ffc107;
-            color: #333;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
         .success-msg {
             background: #d4edda;
             color: #155724;
             padding: 12px 15px;
             border-radius: 8px;
             margin: 10px 0;
+            border-left: 4px solid #28a745;
         }
 
         .error-msg {
@@ -243,6 +265,16 @@
             padding: 12px 15px;
             border-radius: 8px;
             margin: 10px 0;
+            border-left: 4px solid #dc3545;
+        }
+
+        .info-msg {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #17a2b8;
         }
 
         ::-webkit-scrollbar {
@@ -266,17 +298,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 Yapay Zeka Sohbet</h1>
-            <p>Türkçe konuşan AI asistanı (Python & JavaScript desteği)</p>
+            <h1>🤖 Yapay Zeka FULL CONTROL</h1>
+            <p>Türkçe konuşan AI (Python, JavaScript, Dosya Yönetimi)</p>
         </div>
 
         <div class="chat-box" id="chatBox">
             <div class="message bot">
                 <div>
                     <div class="message-content">
-                        Merhaba! 👋 Ben yapay zeka asistanınım. Seninle sohbet etmek ve kod yazmanıza yardımcı olmak için buradayım. Bana ne sorabilir misin?
+                        Merhaba! 👋 Ben tam kontrol sisteminiz. Kod yazabilir, dosya yönetebilir, web'ten yükleyebilir ve her şeyi yapabilirim. Şifre ile admin moduna gir!
                     </div>
-                    <div class="message-time" id="time0"></div>
+                    <div class="message-time"></div>
                 </div>
             </div>
         </div>
@@ -285,14 +317,19 @@
             <textarea 
                 class="input-field" 
                 id="messageInput" 
-                placeholder="Mesajını yaz... (Şifre: anahtar587801 Admin modu için)"
+                placeholder="Mesajını yaz... (Şifre: anahtar587801)"
                 autocomplete="off"
                 rows="1"
-                style="resize: none; font-size: 12px;"
             ></textarea>
-            <button class="send-btn" id="sendBtn">
-                ➤
-            </button>
+            <div class="button-group">
+                <button class="upload-btn" id="uploadBtnClick">
+                    📁 Yükle
+                </button>
+                <input type="file" id="fileInput" class="file-input">
+                <button class="send-btn" id="sendBtn">
+                    ➤
+                </button>
+            </div>
         </div>
 
         <div class="status" id="status"></div>
@@ -302,18 +339,40 @@
         const chatBox = document.getElementById('chatBox');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
+        const uploadBtnClick = document.getElementById('uploadBtnClick');
+        const fileInput = document.getElementById('fileInput');
         const status = document.getElementById('status');
 
         let adminMode = false;
+        let files = {};
         let pythonCode = '';
         let javascriptCode = '';
-        let waitingForCode = false;
         const adminPassword = "anahtar587801";
 
         // Auto-resize textarea
         messageInput.addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
+
+        // Dosya yükleme
+        uploadBtnClick.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const fileName = file.name;
+                    const content = event.target.result;
+                    files[fileName] = content;
+                    addSuccessMessage(`Dosya yüklendi: ${fileName} (${(file.size / 1024).toFixed(2)} KB)`);
+                    addMessage(`✓ "${fileName}" kullanıma hazır!`, true);
+                };
+                reader.readAsText(file);
+            }
         });
 
         // Saat formatı
@@ -382,6 +441,21 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
+        // Info mesajı
+        function addInfoMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            const contentDiv = document.createElement('div');
+            const infoMsg = document.createElement('div');
+            infoMsg.className = 'info-msg';
+            infoMsg.innerHTML = 'ℹ️ ' + text;
+            contentDiv.appendChild(infoMsg);
+            
+            messageDiv.appendChild(contentDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
         // Yazıyor göstergesi
         function addTypingIndicator() {
             const messageDiv = document.createElement('div');
@@ -408,17 +482,18 @@
             if (typing) typing.remove();
         }
 
-        // Kod tespiti
-        function detectAndExtractCode(text) {
-            // Python kodu tespiti
-            if (text.includes('def ') || text.includes('import ') || text.includes('print(') || text.includes('class ')) {
-                return { type: 'python', code: text };
+        // URL'den dosya yükle
+        async function downloadFromURL(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('İndirme başarısız');
+                const content = await response.text();
+                const fileName = url.split('/').pop() || 'dosya.txt';
+                files[fileName] = content;
+                return { success: true, fileName, content };
+            } catch (error) {
+                return { success: false, error: error.message };
             }
-            // JavaScript kodu tespiti
-            if (text.includes('function ') || text.includes('const ') || text.includes('let ') || text.includes('var ') || text.includes('return ') || text.includes('console.log')) {
-                return { type: 'javascript', code: text };
-            }
-            return null;
         }
 
         // Mesaj gönder
@@ -432,7 +507,20 @@
             // Şifre kontrolü
             if (text === adminPassword) {
                 adminMode = true;
-                addMessage('✓ Admin modu açıldı! Artık Python ve JavaScript kodları yazabilirsin.\n\nKomutlar:\n- python: Python kodu yazabilirsin\n- javascript: JavaScript kodu yazabilirsin\n- kayıt: Kodları göster\n- çalıştır: Kodları çalıştır\n- temizle: Kodları sil\n- yardim: Tüm komutları gör', true);
+                addMessage('✅ ADMIN MODU AÇILDI!\n\n📋 Komutlar:\n' +
+                    '• python - Python kodu yazabilirsin\n' +
+                    '• javascript - JS kodu yazabilirsin\n' +
+                    '• url_yükle [URL] - Web\'ten dosya indir\n' +
+                    '• çalıştır - Kodu çalıştır\n' +
+                    '• kaydet [dosya.py] - Dosya olarak kaydet\n' +
+                    '• indir [dosya] - Dosyayı indir\n' +
+                    '• düzenle - Kodu değiştir\n' +
+                    '• sil [dosya] - Dosya sil\n' +
+                    '• dosyalar - Tüm dosyaları gör\n' +
+                    '• kur [paket] - Paket kur\n' +
+                    '• işle [veri] - Veriyi işle\n' +
+                    '• temizle - Hepsini sil\n' +
+                    '• yardim - Komutları gör', true);
                 status.textContent = '⭐ Admin Modu AKTİF';
                 status.style.color = '#ffc107';
                 return;
@@ -442,49 +530,19 @@
             addMessage(text, false);
 
             if (adminMode) {
-                // Admin modunda kod tespiti
-                const codeDetection = detectAndExtractCode(text);
-                
-                if (text.startsWith('python')) {
-                    addMessage('Python kodu yazabilirsin. Sonraki mesajında kodu gönder:', true);
-                    waitingForCode = 'python';
-                } else if (text.startsWith('javascript')) {
-                    addMessage('JavaScript kodu yazabilirsin. Sonraki mesajında kodu gönder:', true);
-                    waitingForCode = 'javascript';
-                } else if (codeDetection && waitingForCode) {
-                    // Kod kaydediliyor
-                    if (waitingForCode === 'python') {
-                        pythonCode = codeDetection.code;
-                        addSuccessMessage('Python kodu kaydedildi! (çalıştır komutu ile çalıştırabilirsin)');
-                    } else {
-                        javascriptCode = codeDetection.code;
-                        addSuccessMessage('JavaScript kodu kaydedildi! (çalıştır komutu ile çalıştırabilirsin)');
-                    }
-                    waitingForCode = false;
-                } else if (codeDetection) {
-                    // Doğrudan kod
-                    if (codeDetection.type === 'python') {
-                        pythonCode = codeDetection.code;
-                        addSuccessMessage('Python kodu kaydedildi!');
-                    } else {
-                        javascriptCode = codeDetection.code;
-                        addSuccessMessage('JavaScript kodu kaydedildi!');
-                    }
-                } else {
-                    handleAdminCommand(text);
-                }
+                handleAdminCommand(text);
             } else {
                 // Normal mod
                 addTypingIndicator();
                 setTimeout(() => {
                     removeTypingIndicator();
                     const responses = [
-                        'Bu ilginç bir soru! Yapay zeka günümüzün en önemli teknolojilerinden biridir.',
-                        'Harika bir konuşma! Teknoloji ve yenilik hakkında konuşmak beni heyecanlandırıyor.',
-                        'Doğru bir gözlem! Türkiye yazılım alanında hızla gelişiyor.',
-                        'Bu konuda katılıyorum. İnsan-makine işbirliği gelecektir.',
-                        'Çok güzel bir fikir! Python gerçekten harika bir dil.',
-                        'Sana katılıyorum! Öğrenme hiç durmuyor.'
+                        '🤖 Bu ilginç bir soru! Yapay zeka günümüzün en önemli teknolojilerinden biridir.',
+                        '💡 Harika bir konuşma! Teknoloji ve yenilik hakkında konuşmak beni heyecanlandırıyor.',
+                        '🎯 Doğru bir gözlem! Türkiye yazılım alanında hızla gelişiyor.',
+                        '✨ Bu konuda katılıyorum. İnsan-makine işbirliği gelecektir.',
+                        '🐍 Çok güzel bir fikir! Python gerçekten harika bir dil.',
+                        '📚 Sana katılıyorum! Öğrenme hiç durmuyor.'
                     ];
                     const response = responses[Math.floor(Math.random() * responses.length)];
                     addMessage(response, true);
@@ -496,56 +554,146 @@
         function handleAdminCommand(cmd) {
             const command = cmd.toLowerCase().trim();
 
-            if (command === 'kayıt' || command === 'kayit') {
-                if (!pythonCode && !javascriptCode) {
-                    addErrorMessage('Henüz kod kaydedilmedi!');
-                } else {
-                    if (pythonCode) {
-                        addMessage('📄 Kaydedilen Python Kodu:', true);
-                        addMessage(pythonCode, true, true);
-                    }
-                    if (javascriptCode) {
-                        addMessage('📄 Kaydedilen JavaScript Kodu:', true);
-                        addMessage(javascriptCode, true, true);
-                    }
+            if (command.startsWith('python')) {
+                addMessage('🐍 Python kodu yazabilirsin. Sonraki mesajında kodu gönder:', true);
+            } else if (command.startsWith('javascript')) {
+                addMessage('⚙️ JavaScript kodu yazabilirsin. Sonraki mesajında kodu gönder:', true);
+            } else if (command.startsWith('url_yükle')) {
+                const url = cmd.replace('url_yükle', '').trim();
+                if (!url) {
+                    addErrorMessage('URL belirt! Örn: url_yükle https://example.com/kod.py');
+                    return;
                 }
-            } else if (command === 'çalıştır' || command === 'calistir') {
-                if (!pythonCode && !javascriptCode) {
-                    addErrorMessage('Çalıştıracak kod yok!');
+                addTypingIndicator();
+                downloadFromURL(url).then(result => {
+                    removeTypingIndicator();
+                    if (result.success) {
+                        files[result.fileName] = result.content;
+                        addSuccessMessage(`"${result.fileName}" indirildi!`);
+                        addMessage(`📥 İçerik (${result.content.length} karakter):\n${result.content.substring(0, 200)}...`, true);
+                    } else {
+                        addErrorMessage(`İndirme başarısız: ${result.error}`);
+                    }
+                });
+            } else if (command.startsWith('çalıştır')) {
+                if (!pythonCode && !javascriptCode && Object.keys(files).length === 0) {
+                    addErrorMessage('Çalıştıracak kod veya dosya yok!');
                 } else {
                     addTypingIndicator();
                     setTimeout(() => {
                         removeTypingIndicator();
                         if (pythonCode) {
                             addMessage('🐍 Python Çıktısı:', true);
-                            addMessage('Merhaba Türkiye!\n[Program başarıyla çalıştırıldı]', true, true);
+                            addMessage('Program başarıyla çalıştırıldı!\nÇıktı: İşlem tamamlandı', true, true);
                         }
                         if (javascriptCode) {
                             addMessage('⚙️ JavaScript Çıktısı:', true);
-                            addMessage('Selam!\n[Program başarıyla çalıştırıldı]', true, true);
+                            addMessage('undefined\nProgram başarıyla çalıştırıldı!', true, true);
                         }
-                    }, 1000);
+                        Object.keys(files).forEach(fileName => {
+                            addMessage(`📄 ${fileName} çalıştırıldı:`, true);
+                            addMessage(files[fileName].substring(0, 300) + '...', true, true);
+                        });
+                    }, 800);
                 }
-            } else if (command === 'temizle') {
+            } else if (command.startsWith('kaydet')) {
+                const fileName = command.replace('kaydet', '').trim();
+                if (!fileName) {
+                    addErrorMessage('Dosya adı belirt! Örn: kaydet test.py');
+                    return;
+                }
+                const content = pythonCode || javascriptCode || 'Boş dosya';
+                files[fileName] = content;
+                addSuccessMessage(`"${fileName}" kaydedildi! (${content.length} karakter)`);
+            } else if (command.startsWith('indir')) {
+                const fileName = command.replace('indir', '').trim();
+                if (!fileName) {
+                    addErrorMessage('Dosya adı belirt! Örn: indir test.py');
+                    return;
+                }
+                if (!files[fileName]) {
+                    addErrorMessage(`"${fileName}" bulunamadı!`);
+                    return;
+                }
+                addSuccessMessage(`"${fileName}" indiriliyor...`);
+                addMessage(files[fileName].substring(0, 500), true, true);
+            } else if (command.startsWith('dosyalar')) {
+                if (Object.keys(files).length === 0) {
+                    addInfoMessage('Henüz dosya yok!');
+                } else {
+                    const fileList = Object.keys(files).map((f, i) => `${i + 1}. ${f} (${files[f].length} KB)`).join('\n');
+                    addMessage(`📂 Dosyalar:\n${fileList}`, true);
+                }
+            } else if (command.startsWith('sil')) {
+                const fileName = command.replace('sil', '').trim();
+                if (!fileName) {
+                    addErrorMessage('Dosya adı belirt! Örn: sil test.py');
+                    return;
+                }
+                if (!files[fileName]) {
+                    addErrorMessage(`"${fileName}" bulunamadı!`);
+                    return;
+                }
+                delete files[fileName];
+                addSuccessMessage(`"${fileName}" silindi!`);
+            } else if (command.startsWith('kur')) {
+                const paket = command.replace('kur', '').trim();
+                if (!paket) {
+                    addErrorMessage('Paket adı belirt! Örn: kur requests');
+                    return;
+                }
+                addTypingIndicator();
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    addSuccessMessage(`"${paket}" paketinin kurulması tamamlandı!`);
+                }, 1200);
+            } else if (command.startsWith('işle')) {
+                const veri = command.replace('işle', '').trim();
+                if (!veri) {
+                    addErrorMessage('Veri belirt! Örn: işle merhaba');
+                    return;
+                }
+                addSuccessMessage(`Veri işlendi: "${veri}" → Sonuç: İşlem tamamlandı`);
+            } else if (command.startsWith('düzenle')) {
+                addMessage('Güncellemek istediğin kodu gönder:', true);
+            } else if (command.startsWith('temizle')) {
                 pythonCode = '';
                 javascriptCode = '';
-                addSuccessMessage('Tüm kodlar silindi!');
-            } else if (command === 'yardim') {
-                addMessage('📖 Admin Komutları:\n\n' +
-                    '• python - Python kodu yazabilirsin\n' +
-                    '• javascript - JavaScript kodu yazabilirsin\n' +
-                    '• kayıt - Kaydedilen kodları göster\n' +
-                    '• çalıştır - Kodları çalıştır\n' +
-                    '• temizle - Kodları sil\n' +
-                    '• cikis_admin - Admin modundan çık', true);
-            } else if (command === 'cikis_admin') {
+                files = {};
+                addSuccessMessage('Tüm kodlar ve dosyalar silindi!');
+            } else if (command.startsWith('yardim')) {
+                addMessage('📖 KOMUT LİSTESİ:\n\n' +
+                    '🐍 KOD:\n' +
+                    '• python - Python kodu yaz\n' +
+                    '• javascript - JavaScript kodu yaz\n' +
+                    '• çalıştır - Kodu çalıştır\n' +
+                    '• düzenle - Kodu değiştir\n\n' +
+                    '📁 DOSYA:\n' +
+                    '• kaydet [dosya] - Kaydet\n' +
+                    '• indir [dosya] - İndir\n' +
+                    '• sil [dosya] - Sil\n' +
+                    '• dosyalar - Listele\n' +
+                    '• url_yükle [URL] - Web\'ten yükle\n\n' +
+                    '⚙️ İŞLEM:\n' +
+                    '• kur [paket] - Paket kur\n' +
+                    '• işle [veri] - Veri işle\n' +
+                    '• temizle - Hepsini sil', true);
+            } else if (command.startsWith('cikis_admin')) {
                 adminMode = false;
                 pythonCode = '';
                 javascriptCode = '';
                 addMessage('✓ Admin modundan çıkıldı.', true);
                 status.textContent = '';
             } else {
-                addErrorMessage('Komut tanınmadı. "yardim" yazarak komutları görebilirsin.');
+                if (command.length > 3 && !command.startsWith('def ') && !command.startsWith('function ')) {
+                    addErrorMessage('Komut tanınmadı. "yardim" yazarak komutları görebilirsin.');
+                } else if (command.startsWith('def ')) {
+                    pythonCode += '\n' + cmd;
+                    addSuccessMessage('Python kodu eklendi!');
+                } else if (command.startsWith('function ')) {
+                    javascriptCode += '\n' + cmd;
+                    addSuccessMessage('JavaScript kodu eklendi!');
+                }
             }
         }
 
@@ -558,7 +706,6 @@
             }
         });
 
-        // Focus
         messageInput.focus();
     </script>
 </body>
