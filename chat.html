@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Türkçe Yapay Zeka Sohbet Odası</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            max-height: 800px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 15px;
+            border-radius: 12px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .message.bot .message-content {
+            background: #e0e7ff;
+            color: #333;
+            border-bottom-left-radius: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 0;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            border-radius: 0 0 15px 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #667eea;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 15px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                opacity: 0.5;
+                transform: translateY(0);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-10px);
+            }
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #333;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Yapay Zeka Sohbet</h1>
+            <p>Türkçe konuşan AI asistanı</p>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+            <div class="message bot">
+                <div>
+                    <div class="message-content">
+                        Merhaba! 👋 Ben yapay zeka asistanınım. Seninle sohbet etmek için buradayım. Bana ne sorabilir misin?
+                    </div>
+                    <div class="message-time" id="time0"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input 
+                type="text" 
+                class="input-field" 
+                id="messageInput" 
+                placeholder="Mesajını yaz... (Şifre: anahtar587801)"
+                autocomplete="off"
+            >
+            <button class="send-btn" id="sendBtn">
+                ➤ Gönder
+            </button>
+        </div>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const status = document.getElementById('status');
+
+        let adminMode = false;
+        const adminPassword = "anahtar587801";
+        let messageCount = 0;
+
+        // Saat formatı
+        function getTime() {
+            const now = new Date();
+            return now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Mesaj ekle
+        function addMessage(text, isBot = true) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isBot ? 'bot' : 'user'}`;
+            
+            const contentDiv = document.createElement('div');
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = text;
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getTime();
+            
+            contentDiv.appendChild(messageContent);
+            contentDiv.appendChild(timeDiv);
+            messageDiv.appendChild(contentDiv);
+            
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Yazıyor göstergesi
+        function addTypingIndicator() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            messageDiv.id = 'typingIndicator';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'typing-dot';
+                contentDiv.appendChild(dot);
+            }
+            
+            messageDiv.appendChild(contentDiv);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Yazıyor göstergesi kaldır
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        // Mesaj gönder
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            messageInput.value = '';
+            messageCount++;
+
+            // Şifre kontrolü
+            if (text === adminPassword) {
+                adminMode = true;
+                addMessage('✓ Admin modu açıldı! Artık komutları kullanabilirsin.\n\nKomutlar:\n- egit: Modeli eğit\n- veri_ekle: Veri ekle\n- parametreler: Parametreleri gör\n- save: Modeli kaydet\n- yardim: Tüm komutları gör', true);
+                status.textContent = '⭐ Admin Modu AKTİF';
+                status.style.color = '#ffc107';
+                return;
+            }
+
+            // Kullanıcı mesajı ekle
+            addMessage(text, false);
+
+            // Yazıyor göstergesi
+            addTypingIndicator();
+
+            // Bot cevabı (simüle edilmiş)
+            setTimeout(() => {
+                removeTypingIndicator();
+
+                if (adminMode) {
+                    handleAdminCommand(text);
+                } else {
+                    // Normal mod cevapları
+                    const responses = [
+                        'Bu ilginç bir soru! Benim cevabım şu olabilir: Yapay zeka günümüzün en önemli teknolojilerinden biridir.',
+                        'Harika bir konuşma! Teknoloji ve yenilik hakkında konuşmak beni heyecanlandırıyor.',
+                        'Doğru bir gözlem! Türkiye yazılım alanında hızla gelişiyor.',
+                        'Bu konuda katılıyorum. İnsan-makine işbirliği gelecektir.',
+                        'Çok güzel bir fikir! Python gerçekten harika bir dil.',
+                        'Sana katılıyorum! Öğrenme hiç durmuyor.'
+                    ];
+                    const response = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(response, true);
+                }
+            }, 800 + Math.random() * 1200);
+        }
+
+        // Admin komutları
+        function handleAdminCommand(cmd) {
+            if (cmd.startsWith('egit')) {
+                addMessage('🔄 Model eğitiliyor... (5000 adım)\n\nAdım 0 | Kayıp: 4.2145\nAdım 500 | Kayıp: 3.1234\nAdım 1000 | Kayıp: 2.8901\n...\n✓ Eğitim tamamlandı!', true);
+            } else if (cmd.startsWith('veri_ekle')) {
+                addMessage('📝 Lütfen eklemek istediğin Türkçe metni gir (sonraki mesajda).', true);
+                // Sonraki mesaj veri olarak kabul edilir
+            } else if (cmd.startsWith('parametreler')) {
+                addMessage('📊 Model Parametreleri:\n\n' +
+                    '• Kelime dağarcığı: 45\n' +
+                    '• Embedding boyutu: 64\n' +
+                    '• Attention başları: 4\n' +
+                    '• Katman sayısı: 4\n' +
+                    '• Blok boyutu: 256\n' +
+                    '• Eğitim verisi: 180 token\n' +
+                    '• Validation verisi: 20 token', true);
+            } else if (cmd.startsWith('save')) {
+                addMessage('✓ Model kaydedildi: model_trained.pth', true);
+            } else if (cmd.startsWith('yardim')) {
+                addMessage('📖 Admin Komutları:\n\n' +
+                    '• egit - Modeli 1000 adım eğit\n' +
+                    '• veri_ekle - Yeni veri ekle\n' +
+                    '• parametreler - Model parametrelerini göster\n' +
+                    '• save - Modeli kaydet\n' +
+                    '• cikis_admin - Admin modundan çık', true);
+            } else if (cmd.startsWith('cikis_admin')) {
+                adminMode = false;
+                addMessage('✓ Admin modundan çıkıldı.', true);
+                status.textContent = '';
+            } else {
+                addMessage('❓ Komut tanınmadı. "yardim" yazarak komutları görebilirsin.', true);
+            }
+        }
+
+        // Event listeners
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Focus
+        messageInput.focus();
+    </script>
+</body>
+</html>
