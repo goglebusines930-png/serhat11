@@ -23,7 +23,7 @@
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -91,6 +91,8 @@
             border-radius: 12px;
             word-wrap: break-word;
             line-height: 1.4;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
         }
 
         .message.bot .message-content {
@@ -98,12 +100,25 @@
             color: #333;
             border-bottom-left-radius: 0;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            font-family: 'Segoe UI', sans-serif;
         }
 
         .message.user .message-content {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-bottom-right-radius: 0;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 12px 15px;
+            border-radius: 8px;
+            max-width: 70%;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 10px 0;
         }
 
         .message-time {
@@ -131,6 +146,7 @@
             font-size: 14px;
             outline: none;
             transition: all 0.3s;
+            font-family: 'Courier New', monospace;
         }
 
         .input-field:focus {
@@ -213,6 +229,22 @@
             margin-left: 5px;
         }
 
+        .success-msg {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .error-msg {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -235,14 +267,14 @@
     <div class="container">
         <div class="header">
             <h1>🤖 Yapay Zeka Sohbet</h1>
-            <p>Türkçe konuşan AI asistanı</p>
+            <p>Türkçe konuşan AI asistanı (Python & JavaScript desteği)</p>
         </div>
 
         <div class="chat-box" id="chatBox">
             <div class="message bot">
                 <div>
                     <div class="message-content">
-                        Merhaba! 👋 Ben yapay zeka asistanınım. Seninle sohbet etmek için buradayım. Bana ne sorabilir misin?
+                        Merhaba! 👋 Ben yapay zeka asistanınım. Seninle sohbet etmek ve kod yazmanıza yardımcı olmak için buradayım. Bana ne sorabilir misin?
                     </div>
                     <div class="message-time" id="time0"></div>
                 </div>
@@ -250,15 +282,16 @@
         </div>
 
         <div class="input-area">
-            <input 
-                type="text" 
+            <textarea 
                 class="input-field" 
                 id="messageInput" 
-                placeholder="Mesajını yaz... (Şifre: anahtar587801)"
+                placeholder="Mesajını yaz... (Şifre: anahtar587801 Admin modu için)"
                 autocomplete="off"
-            >
+                rows="1"
+                style="resize: none; font-size: 12px;"
+            ></textarea>
             <button class="send-btn" id="sendBtn">
-                ➤ Gönder
+                ➤
             </button>
         </div>
 
@@ -272,8 +305,16 @@
         const status = document.getElementById('status');
 
         let adminMode = false;
+        let pythonCode = '';
+        let javascriptCode = '';
+        let waitingForCode = false;
         const adminPassword = "anahtar587801";
-        let messageCount = 0;
+
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+        });
 
         // Saat formatı
         function getTime() {
@@ -282,24 +323,62 @@
         }
 
         // Mesaj ekle
-        function addMessage(text, isBot = true) {
+        function addMessage(text, isBot = true, isCode = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isBot ? 'bot' : 'user'}`;
             
             const contentDiv = document.createElement('div');
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.textContent = text;
+            
+            if (isCode) {
+                const codeBlock = document.createElement('div');
+                codeBlock.className = 'code-block';
+                codeBlock.textContent = text;
+                contentDiv.appendChild(codeBlock);
+            } else {
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.textContent = text;
+                contentDiv.appendChild(messageContent);
+            }
             
             const timeDiv = document.createElement('div');
             timeDiv.className = 'message-time';
             timeDiv.textContent = getTime();
-            
-            contentDiv.appendChild(messageContent);
             contentDiv.appendChild(timeDiv);
-            messageDiv.appendChild(contentDiv);
             
+            messageDiv.appendChild(contentDiv);
             chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Başarı mesajı
+        function addSuccessMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            const contentDiv = document.createElement('div');
+            const successMsg = document.createElement('div');
+            successMsg.className = 'success-msg';
+            successMsg.innerHTML = '✓ ' + text;
+            contentDiv.appendChild(successMsg);
+            
+            messageDiv.appendChild(contentDiv);
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Hata mesajı
+        function addErrorMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            const contentDiv = document.createElement('div');
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'error-msg';
+            errorMsg.innerHTML = '✗ ' + text;
+            contentDiv.appendChild(errorMsg);
+            
+            messageDiv.appendChild(contentDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
@@ -329,18 +408,31 @@
             if (typing) typing.remove();
         }
 
+        // Kod tespiti
+        function detectAndExtractCode(text) {
+            // Python kodu tespiti
+            if (text.includes('def ') || text.includes('import ') || text.includes('print(') || text.includes('class ')) {
+                return { type: 'python', code: text };
+            }
+            // JavaScript kodu tespiti
+            if (text.includes('function ') || text.includes('const ') || text.includes('let ') || text.includes('var ') || text.includes('return ') || text.includes('console.log')) {
+                return { type: 'javascript', code: text };
+            }
+            return null;
+        }
+
         // Mesaj gönder
         function sendMessage() {
             const text = messageInput.value.trim();
             if (!text) return;
 
             messageInput.value = '';
-            messageCount++;
+            messageInput.style.height = 'auto';
 
             // Şifre kontrolü
             if (text === adminPassword) {
                 adminMode = true;
-                addMessage('✓ Admin modu açıldı! Artık komutları kullanabilirsin.\n\nKomutlar:\n- egit: Modeli eğit\n- veri_ekle: Veri ekle\n- parametreler: Parametreleri gör\n- save: Modeli kaydet\n- yardim: Tüm komutları gör', true);
+                addMessage('✓ Admin modu açıldı! Artık Python ve JavaScript kodları yazabilirsin.\n\nKomutlar:\n- python: Python kodu yazabilirsin\n- javascript: JavaScript kodu yazabilirsin\n- kayıt: Kodları göster\n- çalıştır: Kodları çalıştır\n- temizle: Kodları sil\n- yardim: Tüm komutları gör', true);
                 status.textContent = '⭐ Admin Modu AKTİF';
                 status.style.color = '#ffc107';
                 return;
@@ -349,19 +441,45 @@
             // Kullanıcı mesajı ekle
             addMessage(text, false);
 
-            // Yazıyor göstergesi
-            addTypingIndicator();
-
-            // Bot cevabı (simüle edilmiş)
-            setTimeout(() => {
-                removeTypingIndicator();
-
-                if (adminMode) {
-                    handleAdminCommand(text);
+            if (adminMode) {
+                // Admin modunda kod tespiti
+                const codeDetection = detectAndExtractCode(text);
+                
+                if (text.startsWith('python')) {
+                    addMessage('Python kodu yazabilirsin. Sonraki mesajında kodu gönder:', true);
+                    waitingForCode = 'python';
+                } else if (text.startsWith('javascript')) {
+                    addMessage('JavaScript kodu yazabilirsin. Sonraki mesajında kodu gönder:', true);
+                    waitingForCode = 'javascript';
+                } else if (codeDetection && waitingForCode) {
+                    // Kod kaydediliyor
+                    if (waitingForCode === 'python') {
+                        pythonCode = codeDetection.code;
+                        addSuccessMessage('Python kodu kaydedildi! (çalıştır komutu ile çalıştırabilirsin)');
+                    } else {
+                        javascriptCode = codeDetection.code;
+                        addSuccessMessage('JavaScript kodu kaydedildi! (çalıştır komutu ile çalıştırabilirsin)');
+                    }
+                    waitingForCode = false;
+                } else if (codeDetection) {
+                    // Doğrudan kod
+                    if (codeDetection.type === 'python') {
+                        pythonCode = codeDetection.code;
+                        addSuccessMessage('Python kodu kaydedildi!');
+                    } else {
+                        javascriptCode = codeDetection.code;
+                        addSuccessMessage('JavaScript kodu kaydedildi!');
+                    }
                 } else {
-                    // Normal mod cevapları
+                    handleAdminCommand(text);
+                }
+            } else {
+                // Normal mod
+                addTypingIndicator();
+                setTimeout(() => {
+                    removeTypingIndicator();
                     const responses = [
-                        'Bu ilginç bir soru! Benim cevabım şu olabilir: Yapay zeka günümüzün en önemli teknolojilerinden biridir.',
+                        'Bu ilginç bir soru! Yapay zeka günümüzün en önemli teknolojilerinden biridir.',
                         'Harika bir konuşma! Teknoloji ve yenilik hakkında konuşmak beni heyecanlandırıyor.',
                         'Doğru bir gözlem! Türkiye yazılım alanında hızla gelişiyor.',
                         'Bu konuda katılıyorum. İnsan-makine işbirliği gelecektir.',
@@ -370,48 +488,72 @@
                     ];
                     const response = responses[Math.floor(Math.random() * responses.length)];
                     addMessage(response, true);
-                }
-            }, 800 + Math.random() * 1200);
+                }, 800);
+            }
         }
 
         // Admin komutları
         function handleAdminCommand(cmd) {
-            if (cmd.startsWith('egit')) {
-                addMessage('🔄 Model eğitiliyor... (5000 adım)\n\nAdım 0 | Kayıp: 4.2145\nAdım 500 | Kayıp: 3.1234\nAdım 1000 | Kayıp: 2.8901\n...\n✓ Eğitim tamamlandı!', true);
-            } else if (cmd.startsWith('veri_ekle')) {
-                addMessage('📝 Lütfen eklemek istediğin Türkçe metni gir (sonraki mesajda).', true);
-                // Sonraki mesaj veri olarak kabul edilir
-            } else if (cmd.startsWith('parametreler')) {
-                addMessage('📊 Model Parametreleri:\n\n' +
-                    '• Kelime dağarcığı: 45\n' +
-                    '• Embedding boyutu: 64\n' +
-                    '• Attention başları: 4\n' +
-                    '• Katman sayısı: 4\n' +
-                    '• Blok boyutu: 256\n' +
-                    '• Eğitim verisi: 180 token\n' +
-                    '• Validation verisi: 20 token', true);
-            } else if (cmd.startsWith('save')) {
-                addMessage('✓ Model kaydedildi: model_trained.pth', true);
-            } else if (cmd.startsWith('yardim')) {
+            const command = cmd.toLowerCase().trim();
+
+            if (command === 'kayıt' || command === 'kayit') {
+                if (!pythonCode && !javascriptCode) {
+                    addErrorMessage('Henüz kod kaydedilmedi!');
+                } else {
+                    if (pythonCode) {
+                        addMessage('📄 Kaydedilen Python Kodu:', true);
+                        addMessage(pythonCode, true, true);
+                    }
+                    if (javascriptCode) {
+                        addMessage('📄 Kaydedilen JavaScript Kodu:', true);
+                        addMessage(javascriptCode, true, true);
+                    }
+                }
+            } else if (command === 'çalıştır' || command === 'calistir') {
+                if (!pythonCode && !javascriptCode) {
+                    addErrorMessage('Çalıştıracak kod yok!');
+                } else {
+                    addTypingIndicator();
+                    setTimeout(() => {
+                        removeTypingIndicator();
+                        if (pythonCode) {
+                            addMessage('🐍 Python Çıktısı:', true);
+                            addMessage('Merhaba Türkiye!\n[Program başarıyla çalıştırıldı]', true, true);
+                        }
+                        if (javascriptCode) {
+                            addMessage('⚙️ JavaScript Çıktısı:', true);
+                            addMessage('Selam!\n[Program başarıyla çalıştırıldı]', true, true);
+                        }
+                    }, 1000);
+                }
+            } else if (command === 'temizle') {
+                pythonCode = '';
+                javascriptCode = '';
+                addSuccessMessage('Tüm kodlar silindi!');
+            } else if (command === 'yardim') {
                 addMessage('📖 Admin Komutları:\n\n' +
-                    '• egit - Modeli 1000 adım eğit\n' +
-                    '• veri_ekle - Yeni veri ekle\n' +
-                    '• parametreler - Model parametrelerini göster\n' +
-                    '• save - Modeli kaydet\n' +
+                    '• python - Python kodu yazabilirsin\n' +
+                    '• javascript - JavaScript kodu yazabilirsin\n' +
+                    '• kayıt - Kaydedilen kodları göster\n' +
+                    '• çalıştır - Kodları çalıştır\n' +
+                    '• temizle - Kodları sil\n' +
                     '• cikis_admin - Admin modundan çık', true);
-            } else if (cmd.startsWith('cikis_admin')) {
+            } else if (command === 'cikis_admin') {
                 adminMode = false;
+                pythonCode = '';
+                javascriptCode = '';
                 addMessage('✓ Admin modundan çıkıldı.', true);
                 status.textContent = '';
             } else {
-                addMessage('❓ Komut tanınmadı. "yardim" yazarak komutları görebilirsin.', true);
+                addErrorMessage('Komut tanınmadı. "yardim" yazarak komutları görebilirsin.');
             }
         }
 
         // Event listeners
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 sendMessage();
             }
         });
